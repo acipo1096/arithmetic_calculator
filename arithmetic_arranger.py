@@ -1,6 +1,8 @@
+import re
+
+
 def arithmetic_arranger(problems):
-  print(problems)
-  res = [eval(i) for i in problems]
+  # res = [eval(i) for i in problems]
 
   # to break this down, I will split the list into chunks and work with the first problem
   chunk_size = 1
@@ -9,66 +11,83 @@ def arithmetic_arranger(problems):
   for i in range(0, len(problems), chunk_size):
     split_list.append(problems[i:i + chunk_size])
 
-  problemA = split_list.pop(1) + split_list.pop(2)
+  problemA = []
+
+  for i in range(0, len(split_list), 1):
+    problemA += split_list[i]
+
+  print("This is a list: ", problemA)
 
   # Now, convert the list to a string
+  # AND NOW YOU NEED TO REMOVE ALL NON-DIGITS
   string_list = problemA
-  stringA = ' '.join([str(item) for item in string_list])
+  stringC = ' '.join([str(item) for item in string_list])
+  print("This is a string: ", stringC)
+  stringB = re.sub('[^0-9+-\/\*]', ' ', stringC)
+  stringA = stringB
+  print("This is a regex string: ", stringA)
+
+  space = ""
+  problemSpace = "    "
+  dashedLine = ""
+  lineOne = ""
+  lineTwo = ""
 
   # Now split the string to separate number and operator
-  # splitA = stringA.split(" ", 2)
+  # Then, we have to remove all the blank characters
 
-  # Splitting string from one line of input - Test 1
-  space = ""
-  splitA = stringA.split(" ")
+  splitA2 = stringA.split(" ")
+  splitA = []
+  for ele in splitA2:
+    if (ele.strip()):
+      splitA.append(ele)
   print(splitA)
 
-  # Right alignment works, but there's no need to order based on operand length
-  # Splitting string from one line of input - Test 1
-  if (len(splitA[0]) > len(splitA[2])):
-    spaceLength = len(splitA[0]) - len(splitA[2])
-    # Adds the needed number of spaces for the 2nd line based on first operand's length
-    for i in range(0, spaceLength, 1):
-      space += " "
-    splitA[0] = "  " + splitA[0] + '\n'
-    splitA[2] = splitA[1] + " " + space + splitA[2]
-    print(splitA[0] + splitA[2])
-    space = ""
+  problemResult = ''
 
-  # Splitting string from one line of input - Test 2
-  if (len(splitA[3]) > len(splitA[5])):
-    spaceLength = len(splitA[3]) - len(splitA[5])
-    for i in range(0, spaceLength, 1):
-      space += " "
-    splitA[3] = "  " + splitA[3] + '\n'
-    splitA[5] = splitA[4] + " " + space + splitA[5]
-    print(splitA[3] + splitA[5])
+  # What if I keep the same coding principle but alter the syntax/code used?
+  for i in range(0, len(splitA) - 1, 3):
+    # Now, we have to return error if * or /
+    if (splitA[i + 1] == '*' or splitA[i + 1] == '/'):
+      print('Error: Operator must be \'+\' or \'-\'')
+      continue
 
-  # Below works, but seeing errors, it doesn't match the output
+    if (len(splitA[i]) > len(splitA[i + 2])):
+      spaceLength = len(splitA[i]) - len(splitA[i + 2])
+      # Adds the needed number of spaces for the 2nd line based on first operand's length
+      for j in range(0, spaceLength, 1):
+        space += " "
 
-  # Now print them vertically in order and almost perfectly aligned
-  # line1 = splitA[0]
-  # line2 = splitA[1]
-  # if (len(line1) < len(line2)):
-  #   numSpaces = len(line2) - len(line1)
-  #   for i in range(0, numSpaces, 1):
-  #     print(" ", end="")
-  #   print(line1)
-  #   print(line2)
-  # if (len(line1) > len(line2)):
-  #   numSpaces = len(line1) - len(line2)
-  #   print(line1)
-  #   for i in range(0, numSpaces, 1):
-  #     print(" ", end="")
-  #   print(line2)
+      splitA[i] = "  " + splitA[i]
+      splitA[i + 2] = splitA[i + 1] + " " + space + splitA[i + 2]
+      space = ""
 
-  # Prints the number of hyphens based on which line in problem is longer length
-  # if (len(splitA[0]) > len(splitA[1])):
-  #   for i in range(0, len(splitA[0]), 1):
-  #     print("-", end="")
-  # else:
-  #   for i in range(0, len(splitA[1]), 1):
-  #     print("-", end="")
+      lineOne += splitA[i] + problemSpace
+      lineTwo += splitA[i + 2] + problemSpace
+
+      for k in range(0, len((splitA[i])), 1):
+        dashedLine += "-"
+
+      dashedLine += problemSpace
+
+    else:
+      spaceLength = len(splitA[i + 2]) - len(splitA[i])
+      # Adds the needed number of spaces for the 2nd line based on first operand's length
+      for j in range(0, spaceLength, 1):
+        space += " "
+      splitA[i] = "  " + space + splitA[i]
+      splitA[i + 2] = splitA[i + 1] + " " + splitA[i + 2]
+      space = ""
+
+      lineOne += splitA[i] + problemSpace
+      lineTwo += splitA[i + 2] + problemSpace
+
+      for k in range(0, len((splitA[i + 2])), 1):
+        dashedLine += "-"
+
+      dashedLine += problemSpace
+
+  print(" " + lineOne, '\n', lineTwo, '\n', dashedLine)
 
   # Puts the arranged_problems return on the next line
   # print()
