@@ -1,8 +1,6 @@
 import re
 
-
 def arithmetic_arranger(problems, show=False):
-  res = [eval(i) for i in problems]
   # to break this down, I will split the list into chunks and work with the first problem
   chunk_size = 1
   split_list = list()
@@ -30,6 +28,8 @@ def arithmetic_arranger(problems, show=False):
   space = ""
   problemSpace = "    "
   dashedLine = ""
+  dashedLine2 = ""
+  lineLength = []
   lineOne = ""
   lineTwo = ""
   lineThree = ""
@@ -47,15 +47,17 @@ def arithmetic_arranger(problems, show=False):
   # Check for non-letters
   regex = re.compile("[0-9\+\-\*\/]+")
   for r in range(0, len(splitA), 1):
-    print("The current iteration value is: ", splitA[r])
+    # print("The current iteration value is: ", splitA[r])
     result = regex.match(splitA[r]), 0, len(splitA[r])
     # Matches the matched string as opposed to the object returned by .match()
     if (result[0][0] != splitA[r]):
       # print(splitA[r])
       return 'Error: Numbers must only contain digits.'
 
+  res = [eval(i) for i in problems]
+
   # Evaluate all expressions
-  for e in range(0,len(res),1):
+  for e in range(0, len(res), 1):
     answers = str(res[e])
 
   # What if I keep the same coding principle but alter the syntax/code used?
@@ -76,8 +78,9 @@ def arithmetic_arranger(problems, show=False):
     # Evaluate the problems
 
     if (len(splitA[i]) > len(splitA[i + 2])):
+
       spaceLength = len(splitA[i]) - len(splitA[i + 2])
-      
+
       # Adds the needed number of spaces for the 2nd line based on first operand's length
       for j in range(0, spaceLength, 1):
         space += " "
@@ -98,11 +101,16 @@ def arithmetic_arranger(problems, show=False):
 
       for k in range(0, len((splitA[i])), 1):
         dashedLine += "-"
+        dashedLine2 += "-"
+
+      lineLength.append(dashedLine2)
+      dashedLine2 = ""
 
       if (i + 3 < len(splitA)):
         dashedLine += problemSpace
 
     else:
+
       spaceLength = len(splitA[i + 2]) - len(splitA[i])
       # Adds the needed number of spaces for the 2nd line based on first operand's length
       for j in range(0, spaceLength, 1):
@@ -123,37 +131,43 @@ def arithmetic_arranger(problems, show=False):
 
       for k in range(0, len((splitA[i + 2])), 1):
         dashedLine += "-"
+        dashedLine2 += "-"
+
+      lineLength.append(dashedLine2)
+      dashedLine2 = ""
 
       if (i + 3 < len(splitA)):
         dashedLine += problemSpace
 
   # Calculate problems
   # ______________________________
-  for a in range(0,len(res), 1):
-    print(len(res))
+  for a in range(0, len(res), 1):
     strAnswer = str(res[a])
     strLength = len(str(res[a]))
-    print("The current answer is: ",strAnswer)
-    print("The current length is: ",strLength)
-    spaceLength = 6 - strLength
-    print("Spaces needed: ",spaceLength)
-    for s in range(0, spaceLength-1, 1):
+    print(lineLength)
+    print("The current answer is: ", strAnswer)
+    print("The current length is: ", strLength)
+    print("Line length is: ", len(lineLength))
+    spaceLength = len(lineLength[a]) - (strLength)
+    print("Space Length is: ", spaceLength)
+    for s in range(0, spaceLength, 1):
       space += " "
 
-    print("As a reminder, the length of splitA is: ",len(splitA))
-  
-    if (a < len(splitA) - 1):
+    print("The current value of a is", a)
+    print(repr(space))
+
+    if (a < len(problemA) - 1):
       lineThree += space + str(res[a]) + problemSpace
     else:
       lineThree += space + str(res[a])
-    
-    space = ""
-    
 
-  # if (show == False):
-  #   arranged_problems = str(lineOne) + '\n' + str(lineTwo) + '\n' + dashedLine
-  # elif (show == True):
-  arranged_problems = str(lineOne) + '\n' + str(lineTwo) + '\n' + dashedLine + '\n' + lineThree
+    space = ''
+
+  if (show == False):
+    arranged_problems = str(lineOne) + '\n' + str(lineTwo) + '\n' + dashedLine
+  elif (show == True):
+    arranged_problems = str(lineOne) + '\n' + str(
+      lineTwo) + '\n' + dashedLine + '\n' + lineThree
   print(repr(arranged_problems))
 
   return arranged_problems
