@@ -1,9 +1,14 @@
+# Allows me to use Python regular expressions
 import re
 
 def arithmetic_arranger(problems, show=False):
-  # to break this down, I will split the list into chunks and work with the first problem
+  # I start by splitting each problem into chunks
+  # Each problem will have its own index in the list
+  # Even though problems is also a list, I need to split into chunks in a separate list
+  # Splitting into chunks using problems itself splits each number and operand
+  # into a different index
   chunk_size = 1
-  split_list = list()
+  split_list = []
 
   for i in range(0, len(problems), chunk_size):
     split_list.append(problems[i:i + chunk_size])
@@ -13,17 +18,11 @@ def arithmetic_arranger(problems, show=False):
   for i in range(0, len(split_list), 1):
     problemA += split_list[i]
 
-  print("This is a list: ", problemA)
-
   # Now, convert the list to a string
-  # AND NOW YOU NEED TO REMOVE ALL NON-DIGITS
   string_list = problemA
   stringA = ' '.join([str(item) for item in string_list])
-  # print("This is a string: ", stringC)
-  # stringB = re.sub('[^0-9+-\/\*]', ' ', stringC)
-  # stringA = stringB
-  # print("This is a regex string: ", stringA)
 
+  # Initalize empty variables to be used later
   answers = ""
   space = ""
   problemSpace = "    "
@@ -35,32 +34,27 @@ def arithmetic_arranger(problems, show=False):
   lineThree = ""
 
   # Now split the string to separate number and operator
-  # Then, we have to remove all the blank characters
+  # We then have to remove all the blank characters
 
   splitA2 = stringA.split(" ")
   splitA = []
   for ele in splitA2:
     if (ele.strip()):
       splitA.append(ele)
-  print(splitA)
 
   # Check for non-letters
   regex = re.compile("[0-9\+\-\*\/]+")
   for r in range(0, len(splitA), 1):
-    # print("The current iteration value is: ", splitA[r])
     result = regex.match(splitA[r]), 0, len(splitA[r])
     # Matches the matched string as opposed to the object returned by .match()
     if (result[0][0] != splitA[r]):
-      # print(splitA[r])
       return 'Error: Numbers must only contain digits.'
 
+  # This will convert the list objects into integers and solve them automatically
+  # This must be after the non-letter check, or else program will throw an error
   res = [eval(i) for i in problems]
 
-  # Evaluate all expressions
-  for e in range(0, len(res), 1):
-    answers = str(res[e])
-
-  # What if I keep the same coding principle but alter the syntax/code used?
+  # This will iterate through each separate problem in a given list
   for i in range(0, len(splitA) - 1, 3):
 
     # Now, we have to return error if * or /
@@ -75,20 +69,21 @@ def arithmetic_arranger(problems, show=False):
     if (len(splitA[i]) > 4 or len(splitA[i + 2]) > 4):
       return "Error: Numbers cannot be more than four digits."
 
-    # Evaluate the problems
-
+    # Evaluates each problem
+    # If the length of the first problem is greater than the length of the second
     if (len(splitA[i]) > len(splitA[i + 2])):
 
-      spaceLength = len(splitA[i]) - len(splitA[i + 2])
-
       # Adds the needed number of spaces for the 2nd line based on first operand's length
+      spaceLength = len(splitA[i]) - len(splitA[i + 2])
       for j in range(0, spaceLength, 1):
         space += " "
 
       splitA[i] = "  " + splitA[i]
       splitA[i + 2] = splitA[i + 1] + " " + space + splitA[i + 2]
+      # If space is not reset, each iteration will add too many spaces
       space = ""
 
+      # Adds each operator and operand to the correct line
       if (i + 3 < len(splitA) - 1):
         lineOne += splitA[i] + problemSpace
       else:
@@ -98,6 +93,9 @@ def arithmetic_arranger(problems, show=False):
         lineTwo += splitA[i + 2] + problemSpace
       else:
         lineTwo += splitA[i + 2]
+
+      # Calculates the proper number of dashes
+      # dashedLine2 is separate because it won't count the spaces between each problem
 
       for k in range(0, len((splitA[i])), 1):
         dashedLine += "-"
@@ -140,21 +138,11 @@ def arithmetic_arranger(problems, show=False):
         dashedLine += problemSpace
 
   # Calculate problems
-  # ______________________________
   for a in range(0, len(res), 1):
-    strAnswer = str(res[a])
     strLength = len(str(res[a]))
-    print(lineLength)
-    print("The current answer is: ", strAnswer)
-    print("The current length is: ", strLength)
-    print("Line length is: ", len(lineLength))
     spaceLength = len(lineLength[a]) - (strLength)
-    print("Space Length is: ", spaceLength)
     for s in range(0, spaceLength, 1):
       space += " "
-
-    print("The current value of a is", a)
-    print(repr(space))
 
     if (a < len(problemA) - 1):
       lineThree += space + str(res[a]) + problemSpace
@@ -163,11 +151,14 @@ def arithmetic_arranger(problems, show=False):
 
     space = ''
 
+  # Determines whether or not answers will be displayed
   if (show == False):
     arranged_problems = str(lineOne) + '\n' + str(lineTwo) + '\n' + dashedLine
   elif (show == True):
     arranged_problems = str(lineOne) + '\n' + str(
       lineTwo) + '\n' + dashedLine + '\n' + lineThree
+
+  # This allows me to compare my input with the tests
   print(repr(arranged_problems))
 
   return arranged_problems
